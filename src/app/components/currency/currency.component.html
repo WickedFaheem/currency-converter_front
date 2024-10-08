@@ -1,0 +1,155 @@
+<div class="mx-5 my-5 row">
+    <div class="col-md-6">
+        <div class="row">
+            <h3>
+                <b>
+                    Conversion Details
+                </b>
+            </h3>
+        </div>
+        <ng-container *ngIf="dynamicConversions?.length > 0">
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>
+    
+                    </th>
+                    <th scope="col">#</th>
+                    <th scope="col">Base Currency</th>
+                    <th scope="col">Ammount</th>
+                    <th>Date</th>
+                    <!-- <th scope="col">Conversion Date</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let i of dynamicConversions let ind= index">
+                        <tr>
+                            <td class="text-center">
+                                <span class="toogle-icon" style="cursor: pointer;" (click)="ExpandRow(ind)" *ngIf="SelectedIndex != ind">
+                                    +
+                                </span>
+                                <span class="toogle-icon" style="cursor: pointer;" (click)="ExpandRow(ind)" *ngIf="SelectedIndex == ind">
+                                    -
+                                </span>
+                            </td>
+                            <td>
+                                {{ind+1}}
+                            </td>
+                            <td>
+                                {{i.BaseCurrencyName}}
+                            </td>
+                            <td>
+                                {{i.BaseAmmount | number}}
+                            </td>
+                            <td>
+                                {{i.ConversionDate | date:'medium'}}
+                            </td>
+                        </tr>
+
+                        <tr class="explode hide" *ngIf="SelectedIndex == ind && i.currency_lines.length > 0">
+                            <td colspan="5" >
+                                <table class="table table-bordered">
+                                    <thead>
+                                      <tr>
+                                        <!-- <th>#</th> -->
+                                        <th scope="col">Conversion Currency</th>
+                                        <th scope="col">Ammount</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let lines of i.currency_lines let i = index" >
+                                            <tr>
+                                                <!-- <td>
+                                                    {{i+1}}  
+                                                </td> -->
+                                                <td>
+                                                    {{lines.ConversionCurrencyName}}
+                                                </td>
+                                                <td>
+                                                    {{lines.ConversionAmmount | number}}
+                                                </td>
+                                            </tr>
+                    
+                                            
+                                        </ng-container>
+                                     
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </ng-container>
+                 
+                </tbody>
+            </table>
+        </ng-container>
+
+        <ng-container *ngIf="dynamicConversions?.length == 0">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-12">
+                    <h3>
+                        No records found
+                    </h3>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div class="col-md-6 d-flex justify-content-end">
+        <form #f="ngForm" style="width: 30rem;">
+            <h3>
+                <b>
+                    Currency Calculator
+                </b>   
+            </h3>
+            <div class="row mb-2">
+                <div class="col-md-10">
+                    <label for="bascurrency"> Base Currency</label>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="number" name="base_currency_value" class="form-control"
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="params.base_currency_value">
+                            <select [ngModelOptions]="{standalone: true}" [(ngModel)]="params.base_currency"
+                                class="form-control">
+                                <option value="">Select Base Currency </option>
+                                <option *ngFor="let item of transformData" [value]="item.code">
+                                    {{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-2">
+                <div class="col-md-10">
+                    <label for="bascurrency"> Currency</label>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <mat-form-field [style.width.%]=100>
+                                <mat-select multiple="true" (change)="conversion()"
+                                    [ngModelOptions]="{standalone: true}" [(ngModel)]="params.currencies">
+                                    <!-- <mat-option value="" selected>Select Currencies</mat-option> -->
+                                    <mat-option *ngFor="let item of transformData"
+                                        [value]="item.code">{{item.name}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="row mb-2">
+                <div class="align-items-end col-md-10 d-flex justify-content-end">
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <button (click)="resetVal()" class="btn btn-secondary">
+                                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="refresh"></mat-icon>
+                            </button>
+                            <input type="button" value="Result" class="btn btn-primary" (click)="conversion()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
